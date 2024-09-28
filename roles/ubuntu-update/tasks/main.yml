@@ -1,3 +1,5 @@
 ---
 # tasks file for ubuntu-update
-- include_tasks: 10_encrypt_disk.yml
+- include_tasks: 11_check_existed_encrypted_disks.yml
+- include_tasks: 12_encrypt_disk.yml]
+  when: cryptsetup_status.rc != 0
