@@ -1,0 +1,10 @@
+- name: Wipe the partition
+  command: /usr/bin/bash -c '/usr/bin/dd if=/dev/zero of=/dev/{{ nonroot_disk.stdout }} count=4096'
+  ignore_errors: true
+
+- name: Create LUKS partition
+  command: cryptsetup -q luksFormat /dev/{{ nonroot_disk.stdout }} --key-file pass.txt
+
+- name: Open LUKS partition
+  command: cryptsetup open  /dev/{{ nonroot_disk.stdout }} {{ luks_name }} --key-file pass.txt
+

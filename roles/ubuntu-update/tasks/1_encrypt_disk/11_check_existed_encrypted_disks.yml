@@ -6,4 +6,4 @@
 - name: Check if luks_name is existed
   command: cryptsetup -v status {{ luks_name }}
   register: cryptsetup_status
-  failed_when: cryptsetup_status.rc != 0
+  failed_when: cryptsetup_status.rc == 0

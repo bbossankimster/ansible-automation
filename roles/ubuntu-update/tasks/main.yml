@@ -1,7 +1,7 @@
 ---
 # tasks file for ubuntu-update
-- include_tasks: 11_check_existed_encrypted_disks.yml
-- include_tasks: 12_get_nonroot_partitions.yml]
+- include_tasks: 1_encrypt_disk/11_check_existed_encrypted_disks.yml
+- include_tasks: 1_encrypt_disk/12_get_nonroot_partitions.yml
   when: cryptsetup_status.rc != 0
-- include_tasks: 13_do_encrypt_disk.yml]
-  when: cryptsetup_status.rc != 0
+- include_tasks: 1_encrypt_disk/13_do_encrypt_disk.yml
+  when: nonroot_disk.stdout != 'NOT_FOUND'
