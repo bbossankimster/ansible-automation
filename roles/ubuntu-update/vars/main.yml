@@ -1,2 +1,3 @@
 ---
 # vars file for ubuntu-update
+luks_name: "my_encrypted_disk"

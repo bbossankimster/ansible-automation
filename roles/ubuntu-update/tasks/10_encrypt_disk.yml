@@ -1,0 +1,37 @@
+- name: Get block devices
+  command: /usr/bin/bash -c 'lsblk -o NAME,MOUNTPOINT --json > /tmp/devices.json'
+
+- name: Get root disk name
+  command: jq '.blockdevices[] | select(.children[]?.mountpoint == "/") | .name' /tmp/devices.json
+  register: root_disk_name
+
+- name: Show root disk name
+  debug:
+    var: root_disk_name
+
+- name: Get non-root disk name
+  detect_non_root_disk:
+      devices: "{{ ansible_devices }}"
+      root_partion_disk: "{{ root_disk_name.stdout }}"
+  register: nonroot_disk
+
+- name: Debug nonroot disk name
+  debug:
+    var: nonroot_disk
+
+- name: Install cryptsetup
+  apt:
+    name: cryptsetup
+    state: present
+
+- name: Wipe the partition
+  command: /usr/bin/bash -c '/usr/bin/dd if=/dev/zero of=/dev/{{nonroot_disk}} count=4096'
+  dd if=/dev/zero of=/dev/xvdf count=4096
+  ignore_errors: true
+
+- name: Create LUKS partition
+  command: cryptsetup -q luksFormat /dev/{{ nonroot_disk }} --key-file pass.txt
+
+- name: Open LUKS partition
+  command: cryptsetup open  /dev/{{ nonroot_disk }} {{ luks_name }} --key-file pass.txt
+

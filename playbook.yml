@@ -1,0 +1,7 @@
+- name: Implement 'ubuntu-update' tasks
+  hosts: all
+  become: yes
+  roles:
+    - ubuntu-update
+  vars:
+    luks_name: "my_encrypted_disk"
