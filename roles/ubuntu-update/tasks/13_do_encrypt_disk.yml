@@ -1,0 +1,15 @@
+- name: Install cryptsetup
+  apt:
+    name: cryptsetup
+    state: present
+
+- name: Wipe the partition
+  command: /usr/bin/bash -c '/usr/bin/dd if=/dev/zero of=/dev/{{nonroot_disk}} count=4096'
+  ignore_errors: true
+
+- name: Create LUKS partition
+  command: cryptsetup -q luksFormat /dev/{{ nonroot_disk }} --key-file pass.txt
+
+- name: Open LUKS partition
+  command: cryptsetup open  /dev/{{ nonroot_disk }} {{ luks_name }} --key-file pass.txt
+
