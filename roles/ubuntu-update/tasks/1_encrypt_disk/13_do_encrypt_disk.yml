@@ -2,6 +2,9 @@
   command: /usr/bin/bash -c '/usr/bin/dd if=/dev/zero of=/dev/{{ nonroot_disk.stdout }} count=4096'
   ignore_errors: true
 
+- name: Generate random key
+  command: /usr/bin/bash -c 'head /dev/urandom | tr -dc A-Za-z0-9 | head -c 8 > pass.txt'
+
 - name: Create LUKS partition
   command: cryptsetup -q luksFormat /dev/{{ nonroot_disk.stdout }} --key-file pass.txt
 
